@@ -5,7 +5,7 @@ from usecase.dto.ApplicationUpdatedDTO import ApplicationUpdatedDTO
 
 
 def lambda_handler(event, context):
-    useCase = LoanNotificationUseCase()
+    use_case = LoanNotificationUseCase()
 
     records = event.get('Records', [])
     if not records:
@@ -26,7 +26,7 @@ def lambda_handler(event, context):
             print("Body is not valid JSON:", body_str)
             continue
 
-        useCase.notify_application_updated(
+        use_case.notify_application_updated(
             ApplicationUpdatedDTO(**body)
         )
 
