@@ -2,6 +2,7 @@ import abc
 
 from domain import ApplicationUpdatedNotification
 
+
 class NotificationProvider(abc.ABC):
 
     @abc.abstractmethod

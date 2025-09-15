@@ -6,7 +6,8 @@ import boto3
 from domain.ApplicationUpdatedNotification import ApplicationUpdatedNotification
 from domain.gateway import NotificationProvider
 
-class SESNotificationProvider(NotificationProvider):
+
+class SesNotificationProvider(NotificationProvider):
 
     client: BaseClient
 
@@ -72,7 +73,7 @@ class SESNotificationProvider(NotificationProvider):
                     </div>
 
                     <p><b>Requested amount:</b> {notification.amount}</p>
-                    <p><b>Term in months:</b> {notification.amount}</p>
+                    <p><b>Term in months:</b> {notification.term}</p>
 
                 </div>
                 <div class="footer">
