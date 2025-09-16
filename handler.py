@@ -1,7 +1,7 @@
 import json
 
 from usecase import LoanNotificationUseCase
-from usecase.dto.ApplicationUpdatedDTO import ApplicationUpdatedDTO
+from usecase.dto import ApplicationUpdatedDTO
 
 
 def lambda_handler(event, context):
