@@ -1,7 +1,7 @@
+from domain import ApplicationUpdatedNotification
+from domain.gateway import NotificationProvider
 from infrastructure.SesNotificationProvider import SesNotificationProvider
 from usecase.dto.ApplicationUpdatedDTO import ApplicationUpdatedDTO
-from domain.gateway import NotificationProvider
-from domain import ApplicationUpdatedNotification
 
 
 class LoanNotificationUseCase:

@@ -1,9 +1,10 @@
 from typing import List
 
-from botocore.client import BaseClient
 import boto3
+from botocore.client import BaseClient
 
-from domain.ApplicationUpdatedNotification import ApplicationUpdatedNotification
+from domain.ApplicationUpdatedNotification import \
+    ApplicationUpdatedNotification
 from domain.gateway import NotificationProvider
 
 
@@ -12,9 +13,11 @@ class SesNotificationProvider(NotificationProvider):
     client: BaseClient
 
     def __init__(self):
-        self.client = boto3.client('ses', region_name='us-east-1')
+        self.client = boto3.client("ses", region_name="us-east-1")
 
-    def notify_application_updated(self, notification: ApplicationUpdatedNotification) -> None:
+    def notify_application_updated(
+        self, notification: ApplicationUpdatedNotification
+    ) -> None:
         html_content = f"""
         <html>
         <head>
@@ -87,23 +90,12 @@ class SesNotificationProvider(NotificationProvider):
         self._send(
             destinations=[notification.email],
             subject="Loan Request Decision",
-            content=html_content
+            content=html_content,
         )
 
     def _send(self, destinations: List[str], subject: str, content: str) -> None:
         self.client.send_email(
-            Source='lmorocoramos@gmail.com',
-            Destination={
-                'ToAddresses': destinations
-            },
-            Message={
-                'Subject': {
-                    'Data': subject
-                },
-                'Body': {
-                    'Html': {
-                        'Data': content
-                    }
-                }
-            }
+            Source="lmorocoramos@gmail.com",
+            Destination={"ToAddresses": destinations},
+            Message={"Subject": {"Data": subject}, "Body": {"Html": {"Data": content}}},
         )
