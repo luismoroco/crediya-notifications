@@ -23,6 +23,6 @@ def lambda_handler(event, context):
             print("Body is not valid JSON:", body_str)
             continue
 
-        use_case.notify_application_updated(ApplicationUpdatedDTO(**body))
+        use_case.notify_application_updated(ApplicationUpdatedDTO.from_dict(body))
 
     return {"statusCode": 200, "body": json.dumps("Email sent")}

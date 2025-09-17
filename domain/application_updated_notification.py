@@ -1,4 +1,5 @@
 class ApplicationUpdatedNotification:
+
     email: str
     applicationId: int
     applicationStatus: str
