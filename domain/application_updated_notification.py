@@ -1,6 +1,7 @@
 from decimal import Decimal
 from typing import List
 
+
 class PaymentPlanRow:
 
     row_index: int
@@ -11,6 +12,7 @@ class PaymentPlanRow:
 
     def __init__(self):
         pass
+
 
 class ApplicationUpdatedNotification:
 

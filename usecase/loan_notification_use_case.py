@@ -1,11 +1,14 @@
+import logging
 from decimal import Decimal
-from typing import List, ClassVar
+from typing import ClassVar, List
 
-from domain import ApplicationUpdatedNotification, ApplicationStatus, PaymentPlanRow
+from domain import ApplicationStatus, ApplicationUpdatedNotification, PaymentPlanRow
 from domain.gateway import NotificationProvider
 from helper import round_decimal
 from infrastructure import SesNotificationProvider
 from usecase.dto import ApplicationUpdatedDTO
+
+logger = logging.getLogger(__name__)
 
 
 class LoanNotificationUseCase:
@@ -18,6 +21,14 @@ class LoanNotificationUseCase:
         self.notification_provider = SesNotificationProvider()
 
     def notify_application_updated(self, dto: ApplicationUpdatedDTO):
+        logger.info(
+            "[event=notify_application_updated][applicationId=%s][status=%s][amount=%s][deadline=%s]",
+            dto.applicationId,
+            dto.applicationStatus,
+            dto.amount,
+            dto.deadline,
+        )
+
         notification = ApplicationUpdatedNotification()
         notification.email = dto.email
         notification.applicationId = dto.applicationId
@@ -27,16 +38,36 @@ class LoanNotificationUseCase:
         notification.payment_plan = []
 
         if notification.applicationStatus == ApplicationStatus.APPROVED.name:
+            logger.info(
+                "[event=build_payment_plan][applicationId=%s]",
+                dto.applicationId,
+            )
             notification.payment_plan = self._build_payment_plan(dto=dto)
 
         self.notification_provider.notify_application_updated(notification)
+        logger.info(
+            "[event=notification_sent][applicationId=%s][email=%s]",
+            dto.applicationId,
+            dto.email,
+        )
 
     def _build_payment_plan(self, dto: ApplicationUpdatedDTO) -> List[PaymentPlanRow]:
         principal = Decimal(dto.amount)
         monthly_rate = dto.interestRate
         periods = dto.deadline
 
+        logger.info(
+            "[event=build_payment_plan_start][principal=%s][monthlyRate=%s][periods=%s]",
+            principal,
+            monthly_rate,
+            periods,
+        )
+
         installment = self._get_monthly_installment(principal, monthly_rate, periods)
+        logger.info(
+            "[event=monthly_installment_calculated][installment=%s]",
+            installment,
+        )
 
         balance = principal
         plan: List[PaymentPlanRow] = []
@@ -66,4 +97,9 @@ class LoanNotificationUseCase:
             denominator = Decimal(1) - (Decimal(1) + i) ** (-n)
             result = numerator / denominator
 
-        return round_decimal(result)
+        rounded = round_decimal(result)
+        logger.debug(
+            "[event=calculate_installment_result][installment=%s]",
+            rounded,
+        )
+        return rounded

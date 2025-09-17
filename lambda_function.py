@@ -1,7 +1,11 @@
 import json
+import logging
 
 from usecase import LoanNotificationUseCase
 from usecase.dto import ApplicationUpdatedDTO
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, context):

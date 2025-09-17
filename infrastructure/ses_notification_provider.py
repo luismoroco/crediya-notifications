@@ -3,7 +3,7 @@ from typing import List
 import boto3
 from botocore.client import BaseClient
 
-from domain import ApplicationUpdatedNotification, ApplicationStatus
+from domain import ApplicationStatus, ApplicationUpdatedNotification
 from domain.gateway import NotificationProvider
 
 
