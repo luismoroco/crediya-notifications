@@ -3,7 +3,7 @@ from typing import List
 import boto3
 from botocore.client import BaseClient
 
-from domain import ApplicationUpdatedNotification
+from domain import ApplicationUpdatedNotification, ApplicationStatus
 from domain.gateway import NotificationProvider
 
 
@@ -17,6 +17,38 @@ class SesNotificationProvider(NotificationProvider):
     def notify_application_updated(
         self, notification: ApplicationUpdatedNotification
     ) -> None:
+        payment_plan_html = ""
+        if notification.applicationStatus == ApplicationStatus.APPROVED.name:
+            rows = ""
+            for row in notification.payment_plan:
+                rows += f"""
+                <tr>
+                    <td>{row.row_index}</td>
+                    <td>{row.total_payment:.2f}</td>
+                    <td>{row.interest:.2f}</td>
+                    <td>{row.principal:.2f}</td>
+                    <td>{row.balance:.2f}</td>
+                </tr>
+                """
+
+            payment_plan_html = f"""
+            <h3>Payment Plan</h3>
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th>Installment</th>
+                        <th>Total Payment</th>
+                        <th>Interest</th>
+                        <th>Principal</th>
+                        <th>Remaining Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+            """
+
         html_content = f"""
         <html>
         <head>
@@ -76,7 +108,8 @@ class SesNotificationProvider(NotificationProvider):
 
                     <p><b>Requested amount:</b> {notification.amount}</p>
                     <p><b>Term in months:</b> {notification.term}</p>
-
+                    
+                    {payment_plan_html}
                 </div>
                 <div class="footer">
                     © CreditYa 2025.
