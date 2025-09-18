@@ -20,7 +20,9 @@ class LoanNotificationUseCase:
     def __init__(self):
         self.notification_provider = SesNotificationProvider()
 
-    def notify_application_updated(self, dto: ApplicationUpdatedDTO):
+    def notify_application_updated(
+        self, dto: ApplicationUpdatedDTO
+    ) -> ApplicationUpdatedNotification:
         logger.info(
             "[event=notify_application_updated][applicationId=%s][status=%s][amount=%s][deadline=%s]",
             dto.applicationId,
@@ -50,6 +52,8 @@ class LoanNotificationUseCase:
             dto.applicationId,
             dto.email,
         )
+
+        return notification
 
     def _build_payment_plan(self, dto: ApplicationUpdatedDTO) -> List[PaymentPlanRow]:
         principal = Decimal(dto.amount)
